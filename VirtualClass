@@ -1,0 +1,88 @@
+#include <vector>
+#include <iostream>
+
+
+class Animal
+{
+  public: // In class all are per default private, unless you declare them under "public" identifier.
+  void eat()
+  {
+    std::cout<<"I eat generic food."<< std::endl;
+  }
+};
+
+class Cat : public Animal
+{
+  public:
+  void eat()
+  {
+    std::cout<<"I eat rat."<< std::endl;
+  }
+};
+
+class AnimalNew
+{
+  public:
+  virtual void eat()
+  {
+    std::cout<<"I eat generic food."<< std::endl;
+  }
+};
+
+class CatNew : public AnimalNew
+{
+  public:
+  void eat() override 
+  // Keyword "override" tells compiler that this function is supposed to be an implementation of a virtual
+  // function from base class. And if the virtual function is not there, to issue error.
+  {
+    std::cout<<"I eat rat."<< std::endl;
+  }
+};
+
+class Lion : public AnimalNew
+{
+  public:
+  void eat() override
+  {
+    std::cout<<"I eat cow."<< std::endl;
+  }
+};
+
+void printRightFood(Animal* animal)
+{
+  animal->eat();
+}
+
+void printRightFoodNew(AnimalNew* animal)
+{
+  animal->eat();
+}
+
+int main()
+{
+  Animal* animal = new Animal;
+  Cat* cat = new Cat;
+
+  animal->eat();
+  cat->eat();
+
+  printRightFood(cat); // Prints: I eat generic food.
+
+  AnimalNew* animalNew = new AnimalNew;
+  CatNew* catNew = new CatNew;
+  Lion* lion = new Lion;
+
+  std::vector<AnimalNew*> vec {animalNew, catNew, lion};
+
+  for (AnimalNew* ani : vec)
+  {
+    printRightFoodNew(ani); 
+    // Prints:
+    // I eat generic food.
+    // I eat rat.
+    // I eat cow.
+  }
+
+  return 0;
+}
